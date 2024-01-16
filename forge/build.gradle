@@ -6,6 +6,20 @@ architectury {
     forge()
 }
 
+
+loom {
+    //accessWidenerPath = project(":common").loom.accessWidenerPath
+
+    forge {
+        //convertAccessWideners = true
+        //extraAccessWideners.add loom.accessWidenerPath.get().asFile.name
+
+        mixinConfig("${archives_base_name}-common.mixins.json", "${archives_base_name}.mixins.json")
+    }
+}
+
+archivesBaseName = archivesBaseName + "-forge"
+
 configurations {
     common
     shadowCommon // Don't use shadow from the shadow plugin because we don't want IDEA to index this.
@@ -19,8 +33,12 @@ dependencies {
     // Remove the next line if you don't want to depend on the API
     modApi "dev.architectury:architectury-forge:${rootProject.architectury_version}"
 
+    modImplementation("me.shedaniel.cloth:cloth-config-forge:${rootProject.cloth_config_version}")
+
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive = false }
+
+    modRuntimeOnly("curse.maven:farmers-delight-398521:4679319")
 }
 
 processResources {

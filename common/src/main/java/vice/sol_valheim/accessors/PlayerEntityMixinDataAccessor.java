@@ -1,4 +1,4 @@
-package vice.sol_valheim;
+package vice.sol_valheim.accessors;
 
 import com.mojang.authlib.minecraft.client.MinecraftClient;
 import net.minecraft.world.entity.player.Player;

@@ -12,7 +12,14 @@
   "icon": "icon.png",
 
   "environment": "*",
-  "entrypoints": {},
+  "entrypoints": {
+    "main": [
+      "vice.sol_valheim.fabric.FabricInitializer"
+    ],
+    "client": [
+      "vice.sol_valheim.fabric.FabricClientInitializer"
+    ]
+  },
   "mixins": [
     "sol_valheim.mixins.json",
     "sol_valheim-common.mixins.json"

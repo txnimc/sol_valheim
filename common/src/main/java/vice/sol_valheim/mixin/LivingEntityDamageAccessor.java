@@ -1,4 +1,4 @@
-package vice.sol_valheim.accessors;
+package vice.sol_valheim.mixin;
 
 import net.minecraft.world.entity.LivingEntity;
 import org.spongepowered.asm.mixin.Mixin;

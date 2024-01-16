@@ -1,11 +1,17 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "vice.sol_valheim.sol_valheim.mixin.forge",
+  "package": "vice.sol_valheim.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "CakeBlockMixin",
+    "FoodDataMixin",
+    "ItemMixin",
+    "LivingEntityDamageAccessor",
+    "PlayerEntityMixin"
   ],
   "client": [
+    "LocalPlayerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
