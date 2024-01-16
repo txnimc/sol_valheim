@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "id": "sol_valheim",
+  "version": "${version}",
+
+  "name": "Spice of Life: Valheim Edition",
+  "description": "",
+  "authors": [],
+  "contact": {},
+
+  "license": "GNU LGPL 3.0",
+  "icon": "icon.png",
+
+  "environment": "*",
+  "entrypoints": {},
+  "mixins": [
+    "sol_valheim.mixins.json",
+    "sol_valheim-common.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.15.3",
+    "minecraft": ">=1.20.1"
+  }
+}
