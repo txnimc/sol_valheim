@@ -23,6 +23,9 @@ public class CakeBlockMixin
         var canEat = foodData.canEat(Items.CAKE);
         if (canEat)
         {
+            if (level.isClientSide())
+                return;
+
             foodData.eatItem(Items.CAKE);
             return;
         }

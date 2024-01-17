@@ -14,6 +14,7 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.UseAnim;
 
 import java.util.ArrayList;
 import java.util.Dictionary;
@@ -26,21 +27,36 @@ import java.util.List;
 public class ModConfig extends PartitioningSerializer.GlobalData {
 
     public static Common.FoodConfig getFoodConfig(Item item) {
-        if(item != Items.CAKE && !item.isEdible())
+        var isDrink = item.getDefaultInstance().getUseAnimation() == UseAnim.DRINK;
+        if(item != Items.CAKE && !item.isEdible() && !isDrink)
             return null;
 
         var existing = SOLValheim.Config.common.foodConfigs.get(item.arch$registryName());
-        if (existing == null){
-            var food = item  == Items.CAKE
+        if (existing == null)
+        {
+            var registry = item.arch$registryName().toString();
+
+            var food = item == Items.CAKE
                     ? new FoodProperties.Builder().nutrition(10).saturationMod(0.7f).build()
                     : item.getFoodProperties();
+
+            if (isDrink) {
+                if (registry.contains("potion")) {
+                    food = new FoodProperties.Builder().nutrition(4).saturationMod(0.75f).build();
+                }
+                else if (registry.contains("milk")) {
+                    food = new FoodProperties.Builder().nutrition(6).saturationMod(1f).build();
+                }
+                else {
+                    food = new FoodProperties.Builder().nutrition(2).saturationMod(0.5f).build();
+                }
+            }
 
             existing = new Common.FoodConfig();
             existing.nutrition = food.getNutrition();
             existing.healthRegenModifier = 1f;
             existing.saturationModifier = food.getSaturationModifier();
 
-            var registry = item.arch$registryName().toString();
             if (registry.startsWith("farmers"))
             {
                 existing.nutrition = (int) ((existing.nutrition * 1.25));
@@ -101,6 +117,12 @@ public class ModConfig extends PartitioningSerializer.GlobalData {
 
         @ConfigEntry.Gui.Tooltip() @Comment("Percentage remaining before you can eat again")
         public float eatAgainPercentage = 0.2F;
+
+        @ConfigEntry.Gui.Tooltip() @Comment("Boost given to other foods when drinking")
+        public float drinkSlotFoodEffectivenessBonus = 0.10F;
+
+        @ConfigEntry.Gui.Tooltip() @Comment("Simulate food ticking down during night")
+        public boolean passTicksDuringNight = true;
 
         @ConfigEntry.Gui.Tooltip(count = 5) @Comment("""
             Food nutrition and effect overrides (Auto Generated if Empty)

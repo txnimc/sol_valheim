@@ -24,6 +24,9 @@ import vice.sol_valheim.accessors.FoodDataPlayerAccessor;
 import vice.sol_valheim.accessors.PlayerEntityMixinDataAccessor;
 import vice.sol_valheim.ValheimFoodData;
 
+import java.util.ArrayList;
+import java.util.stream.Collectors;
+
 @Mixin({Player.class})
 public abstract class PlayerEntityMixin extends LivingEntity implements PlayerEntityMixinDataAccessor
 {
@@ -76,6 +79,11 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerEn
     private void sol_valheim$tick() {
         if (this.level().isClientSide)
             return;
+
+        if (!this.entityData.hasItem(sol_valheim$DATA_ACCESSOR))
+        {
+            this.entityData.define(sol_valheim$DATA_ACCESSOR, this.sol_valheim$food_data);
+        }
 
         if (isDeadOrDying()) {
             sol_valheim$food_data.clear();
@@ -134,7 +142,16 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerEn
 
     @Inject(at = {@At("TAIL")}, method = {"readAdditionalSaveData(Lnet/minecraft/nbt/CompoundTag;)V"})
     private void onReadCustomData(CompoundTag nbt, CallbackInfo info) {
-        sol_valheim$food_data = ValheimFoodData.read(nbt.getCompound("sol_food_data"));
+        if (sol_valheim$food_data == null)
+            sol_valheim$food_data = new ValheimFoodData();
+
+        var foodData = ValheimFoodData.read(nbt.getCompound("sol_food_data"));
+        sol_valheim$food_data.MaxItemSlots = foodData.MaxItemSlots;
+        sol_valheim$food_data.DrinkSlot = foodData.DrinkSlot;
+        sol_valheim$food_data.ItemEntries = foodData.ItemEntries.stream()
+                .map(ValheimFoodData.EatenFoodItem::new)
+                .collect(Collectors.toCollection(ArrayList::new));
+
         sol_valheim$trackData();
     }
 
@@ -147,6 +164,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerEn
     private void onInitDataTracker(CallbackInfo info) {
         if (sol_valheim$food_data == null)
             sol_valheim$food_data = new ValheimFoodData();
+
         this.entityData.define(sol_valheim$DATA_ACCESSOR, sol_valheim$food_data);
     }
 }

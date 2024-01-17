@@ -8,7 +8,9 @@
     "FoodDataMixin",
     "ItemMixin",
     "LivingEntityDamageAccessor",
-    "PlayerEntityMixin"
+    "PlayerEntityMixin",
+    "ServerLevelMixin",
+    "ServerPlayerMixin"
   ],
   "client": [
     "LocalPlayerMixin"
