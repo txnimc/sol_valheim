@@ -61,10 +61,10 @@ public class FoodHUD implements ClientGuiEvent.RenderHud
         boolean useLargeIcons = SOLValheim.Config.client.useLargeIcons;
 
         int width = client.getWindow().getGuiScaledWidth() / 2 + 91;
-        int height = client.getWindow().getGuiScaledHeight() - 39 - (useLargeIcons ? 6 : 0);
+        int height = client.getWindow().getGuiScaledHeight() - 39 - (useLargeIcons ? 10 : 0);
 
         int offset = 1;
-        int size = useLargeIcons ? 14 : 9;
+        int size = useLargeIcons ? 18 : 9;
 
         for (var food : foodData.ItemEntries) {
             renderFoodSlot(graphics, food, width, size, offset, height, useLargeIcons);
@@ -93,7 +93,7 @@ public class FoodHUD implements ClientGuiEvent.RenderHud
                 FastColor.ARGB32.color(96, 0, 0, 0);
 
         var time = (float) food.ticksLeft / (20 * 60);
-        var scale = useLargeIcons ? 0.75f : 0.5f;
+        var scale = useLargeIcons ? 1f : 0.5f;
         var isSeconds = false;
         var minutes = String.format("%.0f", time);
 
@@ -110,7 +110,7 @@ public class FoodHUD implements ClientGuiEvent.RenderHud
 
         pose.pushPose();
         pose.scale(scale, scale, scale);
-        pose.translate(startWidth * (useLargeIcons ? 0.3333f : 1f), height * (useLargeIcons ? 0.3333f : 1f), 0f);
+        pose.translate(startWidth * (useLargeIcons ? 0f : 1f), height * (useLargeIcons ? 0f : 1f), 0f);
 
         if (food.item == Items.CAKE && Platform.isModLoaded("farmersdelight"))
         {
