@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "id": "sol_valheim",
+  "id": "${id}",
   "version": "${version}",
+  "name": "${display_name}",
 
-  "name": "Spice of Life: Valheim Edition",
   "description": "",
   "authors": [],
   "contact": {},
@@ -25,7 +25,8 @@
     "sol_valheim-common.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.15.3",
-    "minecraft": ">=1.20.1"
+    "minecraft": "${minecraft_version}",
+    "fabricloader": ">=${fabric}",
+    "fabric-api": ">=${fabric_api}"
   }
 }

@@ -19,9 +19,9 @@ public class ClientEvents {
         SOLValheim.addTooltip(event.getItemStack(), event.getFlags(), event.getToolTip());
     }
 
-//    @SubscribeEvent
-//    public static void onRenderGUI(RenderGuiOverlayEvent.Pre event) {
-//        if (event.getOverlay() == VanillaGuiOverlay.FOOD_LEVEL.type())
-//            event.setCanceled(true);
-//    }
+    @SubscribeEvent
+    public static void onRenderGUI(RenderGuiOverlayEvent.Pre event) {
+        if (event.getOverlay() == VanillaGuiOverlay.FOOD_LEVEL.type())
+            event.setCanceled(true);
+    }
 }

@@ -1,30 +1,40 @@
 package vice.sol_valheim;
 
 import dev.architectury.registry.registries.DeferredRegister;
-import me.shedaniel.autoconfig.serializer.Toml4jConfigSerializer;
 import net.minecraft.ChatFormatting;
+
+#if PRE_CURRENT_MC_1_19_2
+import dev.architectury.registry.registries.Registries;
+import net.minecraft.core.Registry;
+#elif POST_CURRENT_MC_1_20_1
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+#endif
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffect;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.*;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 import me.shedaniel.autoconfig.serializer.PartitioningSerializer;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.util.List;
-import java.util.function.Supplier;
 
 public class SOLValheim
 {
-	public static final DeferredRegister<Item> ITEMS = DeferredRegister.create("sol_valheim", Registries.ITEM);
+
+
+	#if PRE_CURRENT_MC_1_19_2
+	public static final DeferredRegister<Item> ITEMS = DeferredRegister.create("sol_valheim", Registry.ITEM_REGISTRY);
+	public static final DeferredRegister<MobEffect> MOB_EFFECTS = DeferredRegister.create("sol_valheim", Registry.MOB_EFFECT_REGISTRY);
+	#elif POST_CURRENT_MC_1_20_1
+    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create("sol_valheim", Registries.ITEM);
 	public static final DeferredRegister<MobEffect> MOB_EFFECTS = DeferredRegister.create("sol_valheim", Registries.MOB_EFFECT);
+    #endif
+
+
 	public static ModConfig Config;
 	public static final String MOD_ID = "sol_valheim";
 
@@ -49,7 +59,12 @@ public class SOLValheim
 			System.out.println("Generating default food configs, this might take a second.");
 			long startTime = System.nanoTime();
 
+			#if PRE_CURRENT_MC_1_19_2
+			Registry.ITEM.forEach(ModConfig::getFoodConfig);
+			#elif POST_CURRENT_MC_1_20_1
 			BuiltInRegistries.ITEM.forEach(ModConfig::getFoodConfig);
+			#endif
+
 
 			AutoConfig.getConfigHolder(ModConfig.class).save();
 

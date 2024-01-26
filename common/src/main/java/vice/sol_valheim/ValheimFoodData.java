@@ -134,9 +134,6 @@ public class ValheimFoodData
     {
         for (var item : ItemEntries)
         {
-            if (DrinkSlot != null && item.ticksLeft % 10 == 0)
-                continue;
-
             item.ticksLeft--;
         }
 

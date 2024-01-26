@@ -1,24 +1,15 @@
+
 plugins {
-    id "com.github.johnrengelman.shadow" version "7.1.2"
+    id "com.github.johnrengelman.shadow" version "$shadow_version"
+    id "me.modmuss50.mod-publish-plugin"
 }
+
 architectury {
     platformSetupLoomIde()
     forge()
 }
 
-
-loom {
-    //accessWidenerPath = project(":common").loom.accessWidenerPath
-
-    forge {
-        //convertAccessWideners = true
-        //extraAccessWideners.add loom.accessWidenerPath.get().asFile.name
-
-        mixinConfig("${archives_base_name}-common.mixins.json", "${archives_base_name}.mixins.json")
-    }
-}
-
-archivesBaseName = archivesBaseName + "-forge"
+def generatedResources = file("src/generated")
 
 configurations {
     common
@@ -28,42 +19,60 @@ configurations {
     developmentForge.extendsFrom common
 }
 
+repositories {
+    // mavens for Forge-exclusives
+    maven { url = "https://maven.theillusivec4.top/" } // Curios
+    maven { // Create Forge and Registrate Forge
+        url = "https://maven.tterrag.com/"
+        content {
+            includeGroup("com.tterrag.registrate")
+            includeGroup("com.simibubi.create")
+        }
+    }
+}
+
+loom {
+    runs {
+        data {
+            data()
+            name "Forge Datagen"
+
+            programArgs "--all", "--mod", "logic_n_control"
+            vmArg '-Dforge.logging.markers=REGISTRIES'
+            vmArg '-Dforge.logging.console.level=debug'
+            programArgs "--output", "${project.rootProject.file("forge/src/generated/resources")}"
+            programArgs "--existing", "${project.rootProject.file("common/src/main/resources")}"
+            programArgs "--existing-mod", "create"
+            programArgs "--flat"
+        }
+    }
+}
+
 dependencies {
-    forge "net.minecraftforge:forge:${rootProject.forge_version}"
-    // Remove the next line if you don't want to depend on the API
-    modApi "dev.architectury:architectury-forge:${rootProject.architectury_version}"
-
-    modImplementation("me.shedaniel.cloth:cloth-config-forge:${rootProject.cloth_config_version}")
-
+    forge "net.minecraftforge:forge:${rootProject.minecraft_version}-${rootProject.forge}"
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive = false }
 
-    modRuntimeOnly("curse.maven:farmers-delight-398521:4679319")
-}
-
-processResources {
-    inputs.property "version", project.version
-
-    filesMatching("META-INF/mods.toml") {
-        expand "version": project.version
-    }
+    modApi "dev.architectury:architectury-forge:${rootProject.architectury_version}"
 }
 
 shadowJar {
     exclude "fabric.mod.json"
+    exclude "architectury.common.json"
 
-    configurations = [project.configurations.shadowCommon]
-    archiveClassifier.set("dev-shadow")
+    configurations = [project.configurations.shadowCommon, project.configurations.shade]
+
+    archiveClassifier.set "dev-shadow"
 }
 
 remapJar {
-    inputFile.set shadowJar.archiveFile
+    input.set shadowJar.archiveFile
     dependsOn shadowJar
-    archiveClassifier.set(null)
+    archiveClassifier.set null
 }
 
 jar {
-    archiveClassifier.set("dev")
+    archiveClassifier.set "dev"
 }
 
 sourcesJar {
@@ -78,10 +87,40 @@ components.java {
     }
 }
 
+publishMods {
+    file = remapJar.archiveFile
+    version = "$mod_version-forge-mc$minecraft_version"
+    type = STABLE
+    displayName = "$display_name $mod_version Forge $minecraft_version"
+    modLoaders.add("forge")
+
+    curseforge {
+        projectId = curseforge_id
+        accessToken = System.getenv("CURSEFORGE_TOKEN")
+        minecraftVersions.add(minecraft_version)
+
+        requires {
+            slug = "architectury-api"
+            slug = "cloth-config"
+        }
+    }
+
+    modrinth {
+        projectId = modrinth_id
+        accessToken = System.getenv("MODRINTH_TOKEN")
+        minecraftVersions.add(minecraft_version)
+
+        requires {
+            slug = "architectury-api"
+            slug = "cloth-config"
+        }
+    }
+}
+
 publishing {
     publications {
         mavenForge(MavenPublication) {
-            artifactId = rootProject.archives_base_name + "-" + project.name
+            artifactId = rootProject.modid + "-" + project.name
             from components.java
         }
     }

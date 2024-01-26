@@ -68,6 +68,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerEn
         }
 
         sol_valheim$food_data.eatItem(stack.getItem());
+        sol_valheim$trackData();
     }
 
     @Inject(at = {@At("HEAD")}, method = {"tick"})
@@ -77,13 +78,14 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerEn
 
     @Unique
     private void sol_valheim$tick() {
-        if (this.level().isClientSide)
-            return;
+        #if PRE_CURRENT_MC_1_19_2
+        var level = this.level;
+        #elif POST_CURRENT_MC_1_20_1
+        var level = this.level();
+        #endif
 
-        if (!this.entityData.hasItem(sol_valheim$DATA_ACCESSOR))
-        {
-            this.entityData.define(sol_valheim$DATA_ACCESSOR, this.sol_valheim$food_data);
-        }
+        if (level.isClientSide)
+            return;
 
         if (isDeadOrDying()) {
             sol_valheim$food_data.clear();
@@ -102,8 +104,8 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerEn
         player.getFoodData().setSaturation(0);
 
         player.getAttribute(Attributes.MAX_HEALTH).setBaseValue(maxhp);
-        if (getHealth() > maxhp)
-            setHealth(maxhp);
+        //if (getHealth() > maxhp)
+        //    setHealth(maxhp);
 
         if (SOLValheim.Config.common.speedBoost > 0.01f) {
             var attr = player.getAttribute(Attributes.MOVEMENT_SPEED);
@@ -114,7 +116,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerEn
                 attr.removeModifier(SOLValheim.getSpeedBuffModifier());
         }
 
-        var timeSinceHurt = player.level().getGameTime() - ((LivingEntityDamageAccessor) this).getLastDamageStamp();
+        var timeSinceHurt = level.getGameTime() - ((LivingEntityDamageAccessor) this).getLastDamageStamp();
         if (timeSinceHurt > SOLValheim.Config.common.regenDelay && player.tickCount % (5 * SOLValheim.Config.common.regenSpeedModifier) == 0)
         {
             player.heal(sol_valheim$food_data.getRegenSpeed() / 20f);
@@ -129,7 +131,12 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerEn
 
     @Inject(at = {@At("HEAD")}, method = {"hurt(Lnet/minecraft/world/damagesource/DamageSource;F)Z"}, cancellable = true)
     private void onDamage(DamageSource source, float amount, CallbackInfoReturnable<Boolean> info) {
+
+        #if PRE_CURRENT_MC_1_19_2
+        if (source == DamageSource.STARVE) {
+        #elif POST_CURRENT_MC_1_20_1
         if (source == this.damageSources().starve()) {
+        #endif
             info.setReturnValue(Boolean.FALSE);
             info.cancel();
         }
@@ -157,7 +164,14 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerEn
 
     @Unique
     private void sol_valheim$trackData() {
+
+        #if PRE_CURRENT_MC_1_19_2
+        this.entityData.set(sol_valheim$DATA_ACCESSOR, sol_valheim$food_data);
+        #elif POST_CURRENT_MC_1_20_1
         this.entityData.set(sol_valheim$DATA_ACCESSOR, sol_valheim$food_data, true);
+        #endif
+
+
     }
 
     @Inject(at = {@At("TAIL")}, method = {"defineSynchedData"})
