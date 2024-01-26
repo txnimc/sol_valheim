@@ -4,28 +4,6 @@ on:
     types: [created]
 
 jobs:
-    webhook-message:
-        runs-on: ubuntu-latest
-        steps:
-            - name: Get branch name
-              id: get_branch
-              run: echo "branch=${GITHUB_REF#refs/heads/}" >> $GITHUB_OUTPUT
-
-            - name: send building message to discord
-              if: "!startsWith(github.event.head_commit.message, '[skip]')"
-              uses: realRobotix/action-discord-notifier@release-master
-              with:
-                  webhook: ${{ secrets.DISCORD_WEBHOOK }}
-                  message-title: Building mod from branch ${{ steps.get_branch.outputs.branch }}
-
-            - name: send not building message to discord
-              if: "startsWith(github.event.head_commit.message, '[skip]')"
-              uses: realRobotix/action-discord-notifier@release-master
-              with:
-                  webhook: ${{ secrets.DISCORD_WEBHOOK }}
-                  message-title: Build skipped for branch ${{ steps.get_branch.outputs.branch }}
-
-
     build_1_19:
         if: "!startsWith(github.event.head_commit.message, '[skip]')"
         strategy:
@@ -56,25 +34,6 @@ jobs:
 
             - name: gradle murders github servers
               run: ./gradlew assemble -PmcVer="1.19.2"
-
-            - name: upload forge build artifacts
-              uses: actions/upload-artifact@v3
-              with:
-                  name: logic_n_control-artifacts-forge-1.19.2
-                  path: forge/build/libs/*.jar
-
-            - name: upload fabric build artifacts
-              uses: actions/upload-artifact@v3
-              with:
-                  name: logic_n_control-artifacts-fabric-1.19.2
-                  path: fabric/build/libs/*.jar
-
-            - name: upload merged build artifact to github
-              uses: actions/upload-artifact@v3
-              with:
-                  name: logic_n_control-artifacts-merged-1.19.2
-                  path: |
-                      build/libs/merged/*.jar
 
             - name: Publish Fabric
               env:
@@ -138,25 +97,6 @@ jobs:
 
             -   name: gradle murders github servers
                 run: ./gradlew assemble -PmcVer="1.20.1"
-
-            -   name: upload forge build artifacts
-                uses: actions/upload-artifact@v3
-                with:
-                    name: logic_n_control-artifacts-forge-1.20.1
-                    path: forge/build/libs/*.jar
-
-            -   name: upload fabric build artifacts
-                uses: actions/upload-artifact@v3
-                with:
-                    name: logic_n_control-artifacts-fabric-1.20.1
-                    path: fabric/build/libs/*.jar
-
-            -   name: upload merged build artifact to github
-                uses: actions/upload-artifact@v3
-                with:
-                    name: logic_n_control-artifacts-merged-1.20.1
-                    path: |
-                        build/libs/merged/*.jar
 
             - name: Publish Fabric
               env:

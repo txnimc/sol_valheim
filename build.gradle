@@ -157,8 +157,6 @@ subprojects {
             expand properties
         }
     }
-
-    remapJar.finalizedBy(mergeJars)
 }
 
 allprojects {

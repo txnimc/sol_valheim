@@ -99,6 +99,7 @@ publishMods {
     type = STABLE
     displayName = "$display_name $mod_version Forge $minecraft_version"
     modLoaders.add("fabric")
+    changelog = "View changelog at https://github.com/anthxnymc/$modid"
 
     curseforge {
         projectId = curseforge_id
