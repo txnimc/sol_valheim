@@ -97,7 +97,7 @@ publishMods {
     file = remapJar.archiveFile
     version = "$mod_version-fabric-mc$minecraft_version"
     type = STABLE
-    displayName = "$display_name $mod_version Forge $minecraft_version"
+    displayName = "$display_name $mod_version Fabric $minecraft_version"
     modLoaders.add("fabric")
     changelog = "View changelog at https://github.com/anthxnymc/$modid"
 
@@ -107,8 +107,11 @@ publishMods {
         minecraftVersions.add(minecraft_version)
 
         requires {
-            slug = "architectury-api"
             slug = "cloth-config"
+        }
+
+        requires {
+            slug = "architectury-api"
         }
     }
 
@@ -118,8 +121,11 @@ publishMods {
         minecraftVersions.add(minecraft_version)
 
         requires {
-            slug = "architectury-api"
             slug = "cloth-config"
+        }
+
+        requires {
+            slug = "architectury-api"
         }
     }
 }
