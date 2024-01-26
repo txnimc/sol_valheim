@@ -89,16 +89,16 @@ components.java {
 
 publishMods {
     file = remapJar.archiveFile
-    version = "$mod_version-forge-mc$minecraft_version"
+    version = "$mod_version-forge-mc$rootProject.minecraft_version"
     type = STABLE
-    displayName = "$display_name $mod_version Forge $minecraft_version"
+    displayName = "$display_name $mod_version Forge $rootProject.minecraft_version"
     modLoaders.add("forge")
     changelog = "View changelog at https://github.com/anthxnymc/$modid"
 
     curseforge {
         projectId = curseforge_id
         accessToken = System.getenv("CURSEFORGE_TOKEN")
-        minecraftVersions.add(minecraft_version)
+        minecraftVersions.add(rootProject.minecraft_version)
 
         requires {
             slug = "cloth-config"
@@ -112,7 +112,7 @@ publishMods {
     modrinth {
         projectId = modrinth_id
         accessToken = System.getenv("MODRINTH_TOKEN")
-        minecraftVersions.add(minecraft_version)
+        minecraftVersions.add(rootProject.minecraft_version)
 
         requires {
             slug = "cloth-config"

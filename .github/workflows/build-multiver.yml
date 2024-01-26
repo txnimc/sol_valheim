@@ -49,23 +49,6 @@ jobs:
                 MAVEN_TOKEN: ${{ secrets.MAVEN_TOKEN }}
               run: ./gradlew :forge:build :forge:publish :forge:publishMods
 
-            - name: upload merged build artifact to discord
-              if: success()
-              uses: sinshutu/upload-to-discord@master
-              env:
-                  DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-              with:
-                  args: build/libs/merged/*.jar
-
-            - name: send build failure message to discord
-              if: failure()
-              uses: ilshidur/action-discord@master
-              env:
-                  DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-              with:
-                  args: 'Build failed for 1.19.2!'
-
-
     build_1_20:
         if: "!startsWith(github.event.head_commit.message, '[skip]')"
         strategy:
@@ -111,19 +94,3 @@ jobs:
                 CURSEFORGE_TOKEN: ${{ secrets.CF_API_TOKEN }}
                 MAVEN_TOKEN: ${{ secrets.MAVEN_TOKEN }}
               run: ./gradlew :forge:build :forge:publish :forge:publishMods
-
-            - name: upload merged build artifact to discord
-              if: success()
-              uses: sinshutu/upload-to-discord@master
-              env:
-                  DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-              with:
-                  args: build/libs/merged/*.jar
-
-            - name: send build failure message to discord
-              if: failure()
-              uses: ilshidur/action-discord@master
-              env:
-                  DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-              with:
-                  args: 'Build failed for 1.20.1!'
