@@ -32,6 +32,12 @@ repositories {
 }
 
 loom {
+    forge {
+        //convertAccessWideners = true
+        //extraAccessWideners.add loom.accessWidenerPath.get().asFile.name
+        mixinConfig("${archives_base_name}-common.mixins.json", "${archives_base_name}.mixins.json")
+    }
+
     runs {
         data {
             data()
