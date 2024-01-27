@@ -40,14 +40,14 @@ jobs:
                 MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
                 CURSEFORGE_TOKEN: ${{ secrets.CF_API_TOKEN }}
                 MAVEN_TOKEN: ${{ secrets.MAVEN_TOKEN }}
-              run: ./gradlew :fabric:build :fabric:publish :fabric:publishMods
+              run: ./gradlew -PmcVer="1.19.2" :fabric:build :fabric:publish :fabric:publishMods
 
             - name: Publish Forge
               env:
                 MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
                 CURSEFORGE_TOKEN: ${{ secrets.CF_API_TOKEN }}
                 MAVEN_TOKEN: ${{ secrets.MAVEN_TOKEN }}
-              run: ./gradlew :forge:build :forge:publish :forge:publishMods
+              run: ./gradlew -PmcVer="1.19.2" :forge:build :forge:publish :forge:publishMods
 
     build_1_20:
         if: "!startsWith(github.event.head_commit.message, '[skip]')"
@@ -86,11 +86,11 @@ jobs:
                 MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
                 CURSEFORGE_TOKEN: ${{ secrets.CF_API_TOKEN }}
                 MAVEN_TOKEN: ${{ secrets.MAVEN_TOKEN }}
-              run: ./gradlew :fabric:build :fabric:publish :fabric:publishMods
+              run: ./gradlew -PmcVer="1.20.1" :fabric:build :fabric:publish :fabric:publishMods
 
             - name: Publish Forge
               env:
                 MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
                 CURSEFORGE_TOKEN: ${{ secrets.CF_API_TOKEN }}
                 MAVEN_TOKEN: ${{ secrets.MAVEN_TOKEN }}
-              run: ./gradlew :forge:build :forge:publish :forge:publishMods
+              run: ./gradlew -PmcVer="1.20.1" :forge:build :forge:publish :forge:publishMods
