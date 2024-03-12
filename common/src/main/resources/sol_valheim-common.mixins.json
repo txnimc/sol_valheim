@@ -10,7 +10,8 @@
     "LivingEntityDamageAccessor",
     "PlayerEntityMixin",
     "ServerLevelMixin",
-    "ServerPlayerMixin"
+    "ServerPlayerMixin",
+    "SynchedEntityDataMixin"
   ],
   "client": [
     "LocalPlayerMixin"

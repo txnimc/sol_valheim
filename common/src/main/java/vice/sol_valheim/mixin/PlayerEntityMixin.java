@@ -23,6 +23,7 @@ import vice.sol_valheim.SOLValheim;
 import vice.sol_valheim.accessors.FoodDataPlayerAccessor;
 import vice.sol_valheim.accessors.PlayerEntityMixinDataAccessor;
 import vice.sol_valheim.ValheimFoodData;
+import vice.sol_valheim.extenders.SynchedEntityDataExtender;
 
 import java.util.ArrayList;
 import java.util.stream.Collectors;
@@ -166,7 +167,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerEn
     private void sol_valheim$trackData() {
 
         #if PRE_CURRENT_MC_1_19_2
-        this.entityData.set(sol_valheim$DATA_ACCESSOR, sol_valheim$food_data);
+        ((SynchedEntityDataExtender) this.entityData).set(sol_valheim$DATA_ACCESSOR, sol_valheim$food_data, true);
         #elif POST_CURRENT_MC_1_20_1
         this.entityData.set(sol_valheim$DATA_ACCESSOR, sol_valheim$food_data, true);
         #endif
