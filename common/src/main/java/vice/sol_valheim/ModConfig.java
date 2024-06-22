@@ -96,6 +96,12 @@ public class ModConfig extends PartitioningSerializer.GlobalData {
         @ConfigEntry.Gui.Tooltip() @Comment("Default time in seconds that food should last per saturation level")
         public int defaultTimer = 180;
 
+        @ConfigEntry.Gui.Tooltip() @Comment("Maximum number of hearts achievable via food")
+        public int maxFoodHealth = 40;
+
+        @ConfigEntry.Gui.Tooltip() @Comment("Multiplier for health gained from food")
+        public float nutritionHealthModifier = 1f;
+
         @ConfigEntry.Gui.Tooltip() @Comment("Speed at which regeneration should occur")
         public float regenSpeedModifier = 1f;
 
@@ -144,7 +150,7 @@ public class ModConfig extends PartitioningSerializer.GlobalData {
             }
 
             public int getHearts() {
-                return Math.max(nutrition, 2);
+                return Math.round(Math.max(nutrition * SOLValheim.Config.common.nutritionHealthModifier, 2));
             }
 
             public float getHealthRegen()
