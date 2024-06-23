@@ -15,10 +15,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.UseAnim;
 
-import java.util.ArrayList;
-import java.util.Dictionary;
-import java.util.Hashtable;
-import java.util.List;
+import java.util.*;
 
 
 @Config(name = SOLValheim.MOD_ID)
@@ -30,7 +27,7 @@ public class ModConfig extends PartitioningSerializer.GlobalData {
         if(item != Items.CAKE && !item.isEdible() && !isDrink)
             return null;
 
-        var existing = SOLValheim.Config.common.foodConfigs.get(item.arch$registryName());
+        var existing = SOLValheim.Config.common.foodConfigs.get(item.arch$registryName().toString());
         if (existing == null)
         {
             var registry = item.arch$registryName().toString();
@@ -74,7 +71,7 @@ public class ModConfig extends PartitioningSerializer.GlobalData {
 //                existing.extraEffects.add(effectConfig);
 //            }
 
-            SOLValheim.Config.common.foodConfigs.put(item.arch$registryName(), existing);
+            SOLValheim.Config.common.foodConfigs.put(item.arch$registryName().toString(), existing);
         }
 
         return existing;
@@ -136,7 +133,7 @@ public class ModConfig extends PartitioningSerializer.GlobalData {
             - healthRegenModifier: Multiplies health regen speed
             - extraEffects: Extra effects provided by eating the food. Format: { String ID, float duration, int amplifier }
         """)
-        public Dictionary<ResourceLocation, FoodConfig> foodConfigs = new Hashtable<>();
+        public LinkedHashMap<String, FoodConfig> foodConfigs = new LinkedHashMap<>() {{}};
 
         public static final class FoodConfig implements ConfigData {
             public int nutrition;
@@ -156,6 +153,16 @@ public class ModConfig extends PartitioningSerializer.GlobalData {
             public float getHealthRegen()
             {
                 return Mth.clamp(nutrition * 0.10f * healthRegenModifier, 0.25f, 2f);
+            }
+
+            @Override
+            public String toString() {
+                return "FoodConfig{" +
+                        "nutrition=" + nutrition +
+                        ", saturationModifier=" + saturationModifier +
+                        ", healthRegenModifier=" + healthRegenModifier +
+                        ", extraEffects=" + extraEffects +
+                        '}';
             }
         }
 
