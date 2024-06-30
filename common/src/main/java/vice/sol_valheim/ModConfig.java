@@ -94,7 +94,7 @@ public class ModConfig extends PartitioningSerializer.GlobalData {
         public int defaultTimer = 180;
 
         @ConfigEntry.Gui.Tooltip() @Comment("Maximum number of hearts achievable via food")
-        public int maxFoodHealth = 40;
+        public int maxFoodHealth = 20;
 
         @ConfigEntry.Gui.Tooltip() @Comment("Multiplier for health gained from food")
         public float nutritionHealthModifier = 1f;
@@ -133,7 +133,7 @@ public class ModConfig extends PartitioningSerializer.GlobalData {
             - healthRegenModifier: Multiplies health regen speed
             - extraEffects: Extra effects provided by eating the food. Format: { String ID, float duration, int amplifier }
         """)
-        public LinkedHashMap<String, FoodConfig> foodConfigs = new LinkedHashMap<>() {{}};
+        public LinkedHashMap<String, FoodConfig> foodConfigs = new LinkedHashMap<>();
 
         public static final class FoodConfig implements ConfigData {
             public int nutrition;
@@ -153,16 +153,6 @@ public class ModConfig extends PartitioningSerializer.GlobalData {
             public float getHealthRegen()
             {
                 return Mth.clamp(nutrition * 0.10f * healthRegenModifier, 0.25f, 2f);
-            }
-
-            @Override
-            public String toString() {
-                return "FoodConfig{" +
-                        "nutrition=" + nutrition +
-                        ", saturationModifier=" + saturationModifier +
-                        ", healthRegenModifier=" + healthRegenModifier +
-                        ", extraEffects=" + extraEffects +
-                        '}';
             }
         }
 
