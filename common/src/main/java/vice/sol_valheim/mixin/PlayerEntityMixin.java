@@ -98,7 +98,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerEn
             sol_valheim$trackData();
         }
 
-        float maxhp = Math.min(40, (SOLValheim.Config.common.startingHealth * 2) + sol_valheim$food_data.getTotalFoodNutrition());
+        float maxhp = Math.min(SOLValheim.Config.common.maxFoodHealth * 2, (SOLValheim.Config.common.startingHealth * 2) + sol_valheim$food_data.getTotalFoodNutrition());
 
         Player player = (Player) (LivingEntity) this;
         player.getFoodData().setSaturation(0);

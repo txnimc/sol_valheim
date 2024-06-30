@@ -19,6 +19,8 @@ import net.minecraft.world.item.*;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 import me.shedaniel.autoconfig.serializer.PartitioningSerializer;
+import com.mojang.logging.LogUtils;
+import org.slf4j.Logger;
 
 import java.util.List;
 
@@ -38,6 +40,7 @@ public class SOLValheim
 	public static ModConfig Config;
 	public static final String MOD_ID = "sol_valheim";
 
+	static final Logger LOGGER = LogUtils.getLogger();
 
 	private static AttributeModifier speedBuff;
 	public static AttributeModifier getSpeedBuffModifier() {
@@ -56,7 +59,7 @@ public class SOLValheim
 
 		if (Config.common.foodConfigs.isEmpty())
 		{
-			System.out.println("Generating default food configs, this might take a second.");
+			LOGGER.info("Generating default food configs, this might take a second.");
 			long startTime = System.nanoTime();
 
 			#if PRE_CURRENT_MC_1_19_2
@@ -70,7 +73,9 @@ public class SOLValheim
 
 			long endTime = System.nanoTime();
 			long executionTime = (endTime - startTime) / 1000000;
-			System.out.println("Generating default food configs took " + executionTime + "ms.");
+			LOGGER.info("Generating default food configs took " + executionTime + "ms.");
+		} else {
+			LOGGER.info("Food configs loaded");
 		}
 
 //
