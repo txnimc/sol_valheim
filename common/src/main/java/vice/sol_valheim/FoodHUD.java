@@ -60,10 +60,10 @@ public class FoodHUD implements ClientGuiEvent.RenderHud
 
         boolean useLargeIcons = SOLValheim.Config.client.useLargeIcons;
 
-        int width = client.getWindow().getGuiScaledWidth() / 2 + 91;
-        int height = client.getWindow().getGuiScaledHeight() - 39 - (useLargeIcons ? 6 : 0);
+        int width = SOLValheim.Config.client.x_offset;
+        int height = client.getWindow().getGuiScaledHeight() - (useLargeIcons ? 14 : 9) - SOLValheim.Config.client.y_offset;
 
-        int offset = 1;
+        int offset = 0;
         int size = useLargeIcons ? 14 : 9;
 
         for (var food : foodData.ItemEntries) {
@@ -85,7 +85,7 @@ public class FoodHUD implements ClientGuiEvent.RenderHud
         int bgColor = isDrink ? FastColor.ARGB32.color(96, 52, 104, 163) : FastColor.ARGB32.color(96, 0, 0, 0);
         int yellow = FastColor.ARGB32.color(255, 255, 191, 0);
 
-        int startWidth = width - (size * offset) - offset + 1;
+        int startWidth = SOLValheim.Config.client.rightToLeft ? (width - size * offset - offset) : (width + size * offset + offset);
         float ticksLeftPercent = Float.min(1.0F, (float) food.ticksLeft / foodConfig.getTime());
         int barHeight = Integer.max(1, (int)((size + 2f) * ticksLeftPercent));
         int barColor = ticksLeftPercent < SOLValheim.Config.common.eatAgainPercentage ?

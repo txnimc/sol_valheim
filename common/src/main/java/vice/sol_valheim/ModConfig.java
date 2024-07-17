@@ -175,5 +175,9 @@ public class ModConfig extends PartitioningSerializer.GlobalData {
         @ConfigEntry.Gui.Tooltip
         @Comment("Enlarge the currently eaten food icons")
         public boolean useLargeIcons = true;
+        @Comment("Anchor point is the bottom left corner")
+        public int x_offset = 212;
+        public int y_offset = 1;
+        public boolean rightToLeft = true;
     }
 }
