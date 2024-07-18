@@ -60,11 +60,11 @@ public class FoodHUD implements ClientGuiEvent.RenderHud
 
         boolean useLargeIcons = SOLValheim.Config.client.useLargeIcons;
 
-        int width = client.getWindow().getGuiScaledWidth() / 2 + 91;
-        int height = client.getWindow().getGuiScaledHeight() - 39 - (useLargeIcons ? 6 : 0);
+        int width = SOLValheim.Config.client.x_offset;
+        int height = client.getWindow().getGuiScaledHeight() - (useLargeIcons ? 18 : 9) - SOLValheim.Config.client.y_offset;
 
-        int offset = 1;
-        int size = useLargeIcons ? 14 : 9;
+        int offset = 0;
+        int size = useLargeIcons ? 18 : 9;
 
         for (var food : foodData.ItemEntries) {
             renderFoodSlot(graphics, food, width, size, offset, height, useLargeIcons);
@@ -85,15 +85,15 @@ public class FoodHUD implements ClientGuiEvent.RenderHud
         int bgColor = isDrink ? FastColor.ARGB32.color(96, 52, 104, 163) : FastColor.ARGB32.color(96, 0, 0, 0);
         int yellow = FastColor.ARGB32.color(255, 255, 191, 0);
 
-        int startWidth = width - (size * offset) - offset + 1;
+        int startWidth = SOLValheim.Config.client.rightToLeft ? (width - size * offset - offset) : (width + size * offset + offset);
         float ticksLeftPercent = Float.min(1.0F, (float) food.ticksLeft / foodConfig.getTime());
         int barHeight = Integer.max(1, (int)((size + 2f) * ticksLeftPercent));
         int barColor = ticksLeftPercent < SOLValheim.Config.common.eatAgainPercentage ?
                 FastColor.ARGB32.color(180, 255, 10, 10) :
-                FastColor.ARGB32.color(96, 0, 0, 0);
+                FastColor.ARGB32.color(96, 0, 255, 0);
 
         var time = (float) food.ticksLeft / (20 * 60);
-        var scale = useLargeIcons ? 0.75f : 0.5f;
+        var scale = useLargeIcons ? 1f : 0.5f;
         var isSeconds = false;
         var minutes = String.format("%.0f", time);
 
@@ -110,7 +110,7 @@ public class FoodHUD implements ClientGuiEvent.RenderHud
 
         pose.pushPose();
         pose.scale(scale, scale, scale);
-        pose.translate(startWidth * (useLargeIcons ? 0.3333f : 1f), height * (useLargeIcons ? 0.3333f : 1f), 0f);
+        pose.translate(startWidth * (useLargeIcons ? 0f : 1f), height * (useLargeIcons ? 0f : 1f), 0f);
 
         if (food.item == Items.CAKE && Platform.isModLoaded("farmersdelight"))
         {
@@ -162,7 +162,7 @@ public class FoodHUD implements ClientGuiEvent.RenderHud
         poseStack.scale(16.0F, 16.0F, 16.0F);
 
         var useLargeIcons = true;
-        var scale = useLargeIcons ? 0.75f : 0.5f;
+        var scale = useLargeIcons ? 1f : 0.5f;
         poseStack.scale(scale, scale, scale);
         poseStack.translate(-0.15, 0.15, 0f);
 
