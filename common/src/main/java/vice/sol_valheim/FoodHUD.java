@@ -61,10 +61,10 @@ public class FoodHUD implements ClientGuiEvent.RenderHud
         boolean useLargeIcons = SOLValheim.Config.client.useLargeIcons;
 
         int width = SOLValheim.Config.client.x_offset;
-        int height = client.getWindow().getGuiScaledHeight() - (useLargeIcons ? 14 : 9) - SOLValheim.Config.client.y_offset;
+        int height = client.getWindow().getGuiScaledHeight() - (useLargeIcons ? 18 : 9) - SOLValheim.Config.client.y_offset;
 
         int offset = 0;
-        int size = useLargeIcons ? 14 : 9;
+        int size = useLargeIcons ? 18 : 9;
 
         for (var food : foodData.ItemEntries) {
             renderFoodSlot(graphics, food, width, size, offset, height, useLargeIcons);
@@ -90,10 +90,10 @@ public class FoodHUD implements ClientGuiEvent.RenderHud
         int barHeight = Integer.max(1, (int)((size + 2f) * ticksLeftPercent));
         int barColor = ticksLeftPercent < SOLValheim.Config.common.eatAgainPercentage ?
                 FastColor.ARGB32.color(180, 255, 10, 10) :
-                FastColor.ARGB32.color(96, 0, 0, 0);
+                FastColor.ARGB32.color(96, 0, 255, 0);
 
         var time = (float) food.ticksLeft / (20 * 60);
-        var scale = useLargeIcons ? 0.75f : 0.5f;
+        var scale = useLargeIcons ? 1f : 0.5f;
         var isSeconds = false;
         var minutes = String.format("%.0f", time);
 
@@ -110,7 +110,7 @@ public class FoodHUD implements ClientGuiEvent.RenderHud
 
         pose.pushPose();
         pose.scale(scale, scale, scale);
-        pose.translate(startWidth * (useLargeIcons ? 0.3333f : 1f), height * (useLargeIcons ? 0.3333f : 1f), 0f);
+        pose.translate(startWidth * (useLargeIcons ? 0f : 1f), height * (useLargeIcons ? 0f : 1f), 0f);
 
         if (food.item == Items.CAKE && Platform.isModLoaded("farmersdelight"))
         {
@@ -162,7 +162,7 @@ public class FoodHUD implements ClientGuiEvent.RenderHud
         poseStack.scale(16.0F, 16.0F, 16.0F);
 
         var useLargeIcons = true;
-        var scale = useLargeIcons ? 0.75f : 0.5f;
+        var scale = useLargeIcons ? 1f : 0.5f;
         poseStack.scale(scale, scale, scale);
         poseStack.translate(-0.15, 0.15, 0f);
 
