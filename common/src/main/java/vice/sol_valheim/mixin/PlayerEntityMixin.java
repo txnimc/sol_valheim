@@ -36,6 +36,9 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerEn
     @Shadow
     protected FoodData foodData;
 
+    @Unique
+    private AttributeModifier sol_valheim_hpmod = new AttributeModifier("Valheim Food HP Buff", 0, AttributeModifier.Operation.ADDITION);
+
     @Override
     @Unique
     public ValheimFoodData sol_valheim$getFoodData() {
@@ -98,14 +101,28 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerEn
             sol_valheim$trackData();
         }
 
-        float maxhp = Math.min(40, (SOLValheim.Config.common.startingHealth * 2) + sol_valheim$food_data.getTotalFoodNutrition());
-
-        Player player = (Player) (LivingEntity) this;
+        //New method for calculating player health, increasing compatibility with other sources of health gain
+        //bookkeeping stuff
+        Player player = (Player) (LivingEntity)this;
         player.getFoodData().setSaturation(0);
+        //set player base hp
+        double basehp = SOLValheim.Config.common.startingHealth * 2;
+            if (basehp > player.getAttribute(Attributes.MAX_HEALTH).getBaseValue()) {
+                player.getAttribute(Attributes.MAX_HEALTH).setBaseValue(basehp);
+            }
 
-        player.getAttribute(Attributes.MAX_HEALTH).setBaseValue(maxhp);
-        //if (getHealth() > maxhp)
-        //    setHealth(maxhp);
+        //build variable space for transform
+        double foodhp = Math.min(SOLValheim.Config.common.maxFoodHealth * 2, sol_valheim$food_data.getTotalFoodNutrition());
+
+
+        //Apply the transform to player health
+        if (player.getAttribute(Attributes.MAX_HEALTH).getModifier(sol_valheim_hpmod.getId()) == null) {
+            player.getAttribute(Attributes.MAX_HEALTH).addPermanentModifier(sol_valheim_hpmod);
+        } else if (player.getAttribute(Attributes.MAX_HEALTH).getModifier(sol_valheim_hpmod.getId()).getAmount() != foodhp) {
+            player.getAttribute(Attributes.MAX_HEALTH).removeModifier(sol_valheim_hpmod.getId());
+            sol_valheim_hpmod = new AttributeModifier("Valheim Food HP Buff", foodhp, AttributeModifier.Operation.ADDITION);
+            player.getAttribute(Attributes.MAX_HEALTH).addPermanentModifier(sol_valheim_hpmod);
+        }
 
         if (SOLValheim.Config.common.speedBoost > 0.01f) {
             var attr = player.getAttribute(Attributes.MOVEMENT_SPEED);
