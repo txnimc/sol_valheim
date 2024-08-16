@@ -88,7 +88,7 @@ public class FoodHUD implements ClientGuiEvent.RenderHud
         int startWidth = width - (size * offset) - offset + 1;
         float ticksLeftPercent = Float.min(1.0F, (float) food.ticksLeft / foodConfig.getTime());
         int barHeight = Integer.max(1, (int)((size + 2f) * ticksLeftPercent));
-        int barColor = ticksLeftPercent < SOLValheim.Config.common.eatAgainPercentage ?
+        int barColor = ticksLeftPercent < 0.2 ?
                 FastColor.ARGB32.color(180, 255, 10, 10) :
                 FastColor.ARGB32.color(96, 0, 0, 0);
 
