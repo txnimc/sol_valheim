@@ -99,8 +99,8 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerEn
         }
 
         float maxhp = Math.min(40, (SOLValheim.Config.common.startingHealth * 2) + sol_valheim$food_data.getTotalFoodNutrition());
-        if (((int)maxhp % 2) != 0)
-            maxhp += 1;
+        // hack: round to full hearts
+        maxhp = Math.round(maxhp / 2) * 2;
 
         Player player = (Player) (LivingEntity) this;
         player.getFoodData().setSaturation(0);
