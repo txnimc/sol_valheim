@@ -93,7 +93,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerEn
             return;
         }
 
-        if (!sol_valheim$food_data.ItemEntries.isEmpty()) {
+        if (!sol_valheim$food_data.ItemEntries.isEmpty() || sol_valheim$food_data.DrinkSlot != null) {
             sol_valheim$food_data.tick();
             sol_valheim$trackData();
         }
