@@ -21,7 +21,7 @@ public class LocalPlayerMixin
         var solPlayer = (PlayerEntityMixinDataAccessor) this;
         var mayFly = ((LocalPlayer) (Object) this).getAbilities().mayfly;
 
-        if (mayFly || ((LocalPlayer) (Object) this).tickCount < SOLValheim.Config.common.respawnGracePeriod * 20)
+        if (mayFly || SOLValheim.Config.common.respawnGracePeriod < 0 || ((LocalPlayer) (Object) this).tickCount < SOLValheim.Config.common.respawnGracePeriod * 20)
         {
             return true;
         }
@@ -42,7 +42,7 @@ public class LocalPlayerMixin
         var solPlayer = (PlayerEntityMixinDataAccessor) this;
         var mayFly = ((LocalPlayer) (Object) this).getAbilities().mayfly;
 
-        if (mayFly || ((LocalPlayer) (Object) this).tickCount < SOLValheim.Config.common.respawnGracePeriod * 20)
+        if (mayFly || SOLValheim.Config.common.respawnGracePeriod < 0 || ((LocalPlayer) (Object) this).tickCount < SOLValheim.Config.common.respawnGracePeriod * 20)
         {
             cir.setReturnValue(true);
             cir.cancel();

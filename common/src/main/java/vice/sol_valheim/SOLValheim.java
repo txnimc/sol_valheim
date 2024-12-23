@@ -54,39 +54,30 @@ public class SOLValheim
 		AutoConfig.register(ModConfig.class, PartitioningSerializer.wrap(JanksonConfigSerializer::new));
 		Config = AutoConfig.getConfigHolder(ModConfig.class).getConfig();
 
-		if (Config.common.foodConfigs.isEmpty())
-		{
-			System.out.println("Generating default food configs, this might take a second.");
-			long startTime = System.nanoTime();
+		boolean addedAny = false;
 
-			#if PRE_CURRENT_MC_1_19_2
-			Registry.ITEM.forEach(ModConfig::getFoodConfig);
-			#elif POST_CURRENT_MC_1_20_1
-			BuiltInRegistries.ITEM.forEach(ModConfig::getFoodConfig);
-			#endif
-
-
-			AutoConfig.getConfigHolder(ModConfig.class).save();
-
-			long endTime = System.nanoTime();
-			long executionTime = (endTime - startTime) / 1000000;
-			System.out.println("Generating default food configs took " + executionTime + "ms.");
+    	#if PRE_CURRENT_MC_1_19_2
+		for (Item item : Registry.ITEM) {
+    	#elif POST_CURRENT_MC_1_20_1
+		for (Item item : BuiltInRegistries.ITEM) {
+		#endif
+			var key = item.arch$registryName();
+			var existing = Config.common.foodConfigs.get(key);
+			if (existing == null) {
+				ModConfig.getFoodConfig(item);
+				addedAny = true;
+			}
 		}
 
-//
-//		try	{
-//			var field = FoodProperties.class.getDeclaredField("canAlwaysEat");
-//			field.setBoolean(Items.ROTTEN_FLESH.getFoodProperties(), true);
-//		}
-//		catch (Exception e) {
-//			System.out.println(e);
-//		}
+		if (addedAny) {
+			//System.out.println("Generated config for missing items...");
+			AutoConfig.getConfigHolder(ModConfig.class).save();
+		}
 	}
 
 
 
-	public static void addTooltip(ItemStack item, TooltipFlag flag, List<Component> list)
-	{
+	public static void addTooltip(ItemStack item, TooltipFlag flag, List<Component> list){
 		var food = item.getItem();
 		if (food == Items.ROTTEN_FLESH) {
 			list.add(Component.literal("☠ Empties Your Stomach!").withStyle(ChatFormatting.GREEN));
@@ -105,12 +96,23 @@ public class SOLValheim
 
 		list.add(Component.literal("⌚ " + String.format("%.0f", minutes)  + " Minute" + (minutes > 1 ? "s" : "")).withStyle(ChatFormatting.GOLD));
 
-		for (var effect : config.extraEffects) {
-			var eff = effect.getEffect();
-			if (eff == null)
-				continue;
+		if(!config.extraEffects.isEmpty() && Config.common.displayEffects) {
+			list.add(Component.literal(""));
+			for (var effect : config.extraEffects) {
+				var eff = effect.getEffect();
+				if (eff == null)
+					continue;
 
-			list.add(Component.literal("★ " + eff.getDisplayName().getString() + (effect.amplifier > 1 ? " " + effect.amplifier : "")).withStyle(ChatFormatting.GREEN));
+				float effectDurationSeconds = config.getTime() * effect.duration / 20f;
+				int minutesPart = (int) (effectDurationSeconds / 60);
+				int secondsPart = (int) (effectDurationSeconds % 60);
+
+
+				if (eff.isBeneficial())
+					list.add(Component.literal("★ " + eff.getDisplayName().getString() + (effect.amplifier > 1 ? " " + effect.amplifier : "") +  String.format(" (%02d:%02d)", minutesPart, secondsPart)).withStyle(ChatFormatting.GREEN));
+				else
+					list.add(Component.literal("❌ " + eff.getDisplayName().getString() + (effect.amplifier > 1 ? " " + effect.amplifier : "") + String.format(" (%02d:%02d)", minutesPart, secondsPart)).withStyle(ChatFormatting.DARK_RED));
+			}
 		}
 
 		if (item.getUseAnimation() == UseAnim.DRINK) {
