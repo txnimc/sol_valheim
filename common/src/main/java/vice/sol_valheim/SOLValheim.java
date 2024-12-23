@@ -96,12 +96,23 @@ public class SOLValheim
 
 		list.add(Component.literal("⌚ " + String.format("%.0f", minutes)  + " Minute" + (minutes > 1 ? "s" : "")).withStyle(ChatFormatting.GOLD));
 
-		for (var effect : config.extraEffects) {
-			var eff = effect.getEffect();
-			if (eff == null)
-				continue;
+		if(!config.extraEffects.isEmpty() && Config.common.displayEffects) {
+			list.add(Component.literal(""));
+			for (var effect : config.extraEffects) {
+				var eff = effect.getEffect();
+				if (eff == null)
+					continue;
 
-			list.add(Component.literal("★ " + eff.getDisplayName().getString() + (effect.amplifier > 1 ? " " + effect.amplifier : "")).withStyle(ChatFormatting.GREEN));
+				float effectDurationSeconds = config.getTime() * effect.duration / 20f;
+				int minutesPart = (int) (effectDurationSeconds / 60);
+				int secondsPart = (int) (effectDurationSeconds % 60);
+
+
+				if (eff.isBeneficial())
+					list.add(Component.literal("★ " + eff.getDisplayName().getString() + (effect.amplifier > 1 ? " " + effect.amplifier : "") +  String.format(" (%02d:%02d)", minutesPart, secondsPart)).withStyle(ChatFormatting.GREEN));
+				else
+					list.add(Component.literal("❌ " + eff.getDisplayName().getString() + (effect.amplifier > 1 ? " " + effect.amplifier : "") + String.format(" (%02d:%02d)", minutesPart, secondsPart)).withStyle(ChatFormatting.DARK_RED));
+			}
 		}
 
 		if (item.getUseAnimation() == UseAnim.DRINK) {

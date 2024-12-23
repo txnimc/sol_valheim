@@ -106,6 +106,9 @@ public class ModConfig extends PartitioningSerializer.GlobalData {
         @ConfigEntry.Gui.Tooltip() @Comment("Extra speed given when your hearts are full (0 to disable)")
         public float speedBoost = 0.20f;
 
+        @ConfigEntry.Gui.Tooltip() @Comment("Maximum allowed hearts from food")
+        public int maxFoodHealth = 100;
+
         @ConfigEntry.Gui.Tooltip() @Comment("Number of hearts to start with")
         public int startingHealth = 3;
 
@@ -120,6 +123,9 @@ public class ModConfig extends PartitioningSerializer.GlobalData {
 
         @ConfigEntry.Gui.Tooltip() @Comment("Simulate food ticking down during night")
         public boolean passTicksDuringNight = true;
+
+        @ConfigEntry.Gui.Tooltip() @Comment("Whether or not food tooltips should show extra effects")
+        public boolean displayEffects = true;
 
         @ConfigEntry.Gui.Tooltip(count = 5) @Comment("""
             Food nutrition and effect overrides (Auto Generated if Empty)

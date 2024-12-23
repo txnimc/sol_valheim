@@ -19,6 +19,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import vice.sol_valheim.ModConfig;
 import vice.sol_valheim.SOLValheim;
 import vice.sol_valheim.accessors.FoodDataPlayerAccessor;
 import vice.sol_valheim.accessors.PlayerEntityMixinDataAccessor;
@@ -96,9 +97,27 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerEn
         if (!sol_valheim$food_data.ItemEntries.isEmpty()) {
             sol_valheim$food_data.tick();
             sol_valheim$trackData();
+
+            var player = (Player) (Object) this;
+            if (player.tickCount % 20 == 0) {
+                // Handle main eaten items
+                for (var eaten : sol_valheim$food_data.ItemEntries) {
+                    var config = ModConfig.getFoodConfig(eaten.item);
+                    if (config != null) {
+                        sol_valheim$applyFoodEffectsToPlayer(player, eaten, config);
+                    }
+                }
+                // Handle drink slot
+                if (sol_valheim$food_data.DrinkSlot != null) {
+                    var config = ModConfig.getFoodConfig(sol_valheim$food_data.DrinkSlot.item);
+                    if (config != null) {
+                        sol_valheim$applyFoodEffectsToPlayer(player, sol_valheim$food_data.DrinkSlot, config);
+                    }
+                }
+            }
         }
 
-        float maxhp = Math.min(40, (SOLValheim.Config.common.startingHealth * 2) + sol_valheim$food_data.getTotalFoodNutrition());
+        float maxhp = Math.min(SOLValheim.Config.common.maxFoodHealth * 2, (SOLValheim.Config.common.startingHealth * 2) + sol_valheim$food_data.getTotalFoodNutrition());
         // hack: round to full hearts
         maxhp = Math.round(maxhp / 2) * 2;
 
@@ -122,6 +141,40 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerEn
         if (timeSinceHurt > SOLValheim.Config.common.regenDelay && player.tickCount % (5 * SOLValheim.Config.common.regenSpeedModifier) == 0)
         {
             player.heal(sol_valheim$food_data.getRegenSpeed() / 20f);
+        }
+    }
+
+    @Unique
+    private void sol_valheim$applyFoodEffectsToPlayer(Player player,
+                                                      ValheimFoodData.EatenFoodItem eatenData,
+                                                      ModConfig.Common.FoodConfig config)
+    {
+        int ticksLeft = eatenData.ticksLeft;
+
+        for (var effectCfg : config.extraEffects) {
+            var mobEffect = effectCfg.getEffect();
+            if (mobEffect == null)
+                continue;
+
+            int amplifier = Math.max(effectCfg.amplifier - 1, 0);
+            float fractionActive = effectCfg.duration;
+            int totalTime = config.getTime();
+            int threshold = (int) (totalTime * fractionActive);
+
+            if (ticksLeft >= (totalTime - threshold)) {
+                player.addEffect(
+                        new net.minecraft.world.effect.MobEffectInstance(
+                                mobEffect,
+                                120, // just so it doesn't flash
+                                amplifier,
+                                false,
+                                false
+                        )
+                );
+            }
+            else {
+                player.removeEffect(mobEffect);
+            }
         }
     }
 
