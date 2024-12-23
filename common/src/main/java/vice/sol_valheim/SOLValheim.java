@@ -54,39 +54,30 @@ public class SOLValheim
 		AutoConfig.register(ModConfig.class, PartitioningSerializer.wrap(JanksonConfigSerializer::new));
 		Config = AutoConfig.getConfigHolder(ModConfig.class).getConfig();
 
-		if (Config.common.foodConfigs.isEmpty())
-		{
-			System.out.println("Generating default food configs, this might take a second.");
-			long startTime = System.nanoTime();
+		boolean addedAny = false;
 
-			#if PRE_CURRENT_MC_1_19_2
-			Registry.ITEM.forEach(ModConfig::getFoodConfig);
-			#elif POST_CURRENT_MC_1_20_1
-			BuiltInRegistries.ITEM.forEach(ModConfig::getFoodConfig);
-			#endif
-
-
-			AutoConfig.getConfigHolder(ModConfig.class).save();
-
-			long endTime = System.nanoTime();
-			long executionTime = (endTime - startTime) / 1000000;
-			System.out.println("Generating default food configs took " + executionTime + "ms.");
+    	#if PRE_CURRENT_MC_1_19_2
+		for (Item item : Registry.ITEM) {
+    	#elif POST_CURRENT_MC_1_20_1
+		for (Item item : BuiltInRegistries.ITEM) {
+		#endif
+			var key = item.arch$registryName();
+			var existing = Config.common.foodConfigs.get(key);
+			if (existing == null) {
+				ModConfig.getFoodConfig(item);
+				addedAny = true;
+			}
 		}
 
-//
-//		try	{
-//			var field = FoodProperties.class.getDeclaredField("canAlwaysEat");
-//			field.setBoolean(Items.ROTTEN_FLESH.getFoodProperties(), true);
-//		}
-//		catch (Exception e) {
-//			System.out.println(e);
-//		}
+		if (addedAny) {
+			//System.out.println("Generated config for missing items...");
+			AutoConfig.getConfigHolder(ModConfig.class).save();
+		}
 	}
 
 
 
-	public static void addTooltip(ItemStack item, TooltipFlag flag, List<Component> list)
-	{
+	public static void addTooltip(ItemStack item, TooltipFlag flag, List<Component> list){
 		var food = item.getItem();
 		if (food == Items.ROTTEN_FLESH) {
 			list.add(Component.literal("☠ Empties Your Stomach!").withStyle(ChatFormatting.GREEN));
