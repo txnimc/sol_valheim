@@ -1,0 +1,10 @@
+{
+  "tooltip.sol_valheim.refreshing": "❄ Refreshing!",
+  "tooltip.sol_valheim.empty_stomach": "☠ Empties Your Stomach!",
+  "tooltip.sol_valheim.hearts": "❤ %s Heart",
+  "tooltip.sol_valheim.hearts_plural": "❤ %s Hearts",
+  "tooltip.sol_valheim.regen": "☀ %s Regen",
+  "tooltip.sol_valheim.duration": "⌚ %s Minute",
+  "tooltip.sol_valheim.duration_plural": "⌚ %s Minutes",
+  "tooltip.sol_valheim.effect": "★ %s"
+} 

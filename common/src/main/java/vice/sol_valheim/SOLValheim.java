@@ -2,6 +2,7 @@ package vice.sol_valheim;
 
 import dev.architectury.registry.registries.DeferredRegister;
 import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.MutableComponent;
 
 #if PRE_CURRENT_MC_1_19_2
 import dev.architectury.registry.registries.Registries;
@@ -89,7 +90,7 @@ public class SOLValheim
 	{
 		var food = item.getItem();
 		if (food == Items.ROTTEN_FLESH) {
-			list.add(Component.literal("☠ Empties Your Stomach!").withStyle(ChatFormatting.GREEN));
+			list.add(Component.translatable("tooltip.sol_valheim.empty_stomach").withStyle(ChatFormatting.GREEN));
 			return;
 		}
 
@@ -98,24 +99,29 @@ public class SOLValheim
 			return;
 
 		var hearts = config.getHearts() % 2 == 0 ? config.getHearts() / 2 : String.format("%.1f", (float) config.getHearts() / 2f);
-		list.add(Component.literal("❤ " + hearts + " Heart" + (config.getHearts() / 2f > 1 ? "s" : "")).withStyle(ChatFormatting.RED));
-		list.add(Component.literal("☀ " + String.format("%.1f", config.getHealthRegen()) + " Regen").withStyle(ChatFormatting.DARK_RED));
+		String heartKey = config.getHearts() / 2f <= 1 ? "tooltip.sol_valheim.hearts" : "tooltip.sol_valheim.hearts_plural";
+		list.add(Component.translatable(heartKey, hearts).withStyle(ChatFormatting.RED));
+		
+		list.add(Component.translatable("tooltip.sol_valheim.regen", String.format("%.1f", config.getHealthRegen()))
+				.withStyle(ChatFormatting.DARK_RED));
 
 		var minutes = (float) config.getTime() / (20 * 60);
-
-		list.add(Component.literal("⌚ " + String.format("%.0f", minutes)  + " Minute" + (minutes > 1 ? "s" : "")).withStyle(ChatFormatting.GOLD));
+		String durationKey = minutes <= 1 ? "tooltip.sol_valheim.duration" : "tooltip.sol_valheim.duration_plural";
+		list.add(Component.translatable(durationKey, String.format("%.0f", minutes))
+				.withStyle(ChatFormatting.GOLD));
 
 		for (var effect : config.extraEffects) {
 			var eff = effect.getEffect();
 			if (eff == null)
 				continue;
 
-			list.add(Component.literal("★ " + eff.getDisplayName().getString() + (effect.amplifier > 1 ? " " + effect.amplifier : "")).withStyle(ChatFormatting.GREEN));
+			MutableComponent effectText = Component.translatable("tooltip.sol_valheim.effect", 
+				eff.getDisplayName().getString() + (effect.amplifier > 1 ? " " + effect.amplifier : ""));
+			list.add(effectText.withStyle(ChatFormatting.GREEN));
 		}
 
 		if (item.getUseAnimation() == UseAnim.DRINK) {
-			list.add(Component.literal("❄ Refreshing!").withStyle(ChatFormatting.AQUA));
-
+			list.add(Component.translatable("tooltip.sol_valheim.refreshing").withStyle(ChatFormatting.AQUA));
 		}
 	}
 }

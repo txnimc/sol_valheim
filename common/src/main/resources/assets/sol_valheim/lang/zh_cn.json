@@ -1,0 +1,10 @@
+{
+  "tooltip.sol_valheim.refreshing": "❄ 清爽提神！",
+  "tooltip.sol_valheim.empty_stomach": "☠ 喷射一把！",
+  "tooltip.sol_valheim.hearts": "❤ %s 颗心",
+  "tooltip.sol_valheim.hearts_plural": "❤ %s 颗心",
+  "tooltip.sol_valheim.regen": "☀ %s 生命恢复",
+  "tooltip.sol_valheim.duration": "⌚ %s 分钟",
+  "tooltip.sol_valheim.duration_plural": "⌚ %s 分钟",
+  "tooltip.sol_valheim.effect": "★ %s"
+} 

@@ -109,7 +109,7 @@ public class ModConfig extends PartitioningSerializer.GlobalData {
         public float speedBoost = 0.20f;
 
         @ConfigEntry.Gui.Tooltip() @Comment("Number of hearts to start with")
-        public int startingHealth = 3;
+        public int startingHealth = 5;
 
         @ConfigEntry.Gui.Tooltip() @Comment("Number of food slots (range 2-5, default 3)")
         public int maxSlots = 3;
