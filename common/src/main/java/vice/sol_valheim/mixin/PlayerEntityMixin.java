@@ -98,7 +98,9 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerEn
             sol_valheim$trackData();
         }
 
-        float maxhp = Math.min(40, (SOLValheim.Config.common.startingHealth * 2) + sol_valheim$food_data.getTotalFoodNutrition());
+        // 在这里修改最大血量，按照游戏里的设定，最大的食物是10心，20点，能容纳三个就是60点，还有饮料最大3心6点，加上原版的3心6点，就是66点，我们限制在60点
+        //默认是SOLValheim.Config.common.startingHealth 我先硬编码到5心
+        float maxhp = Math.min(80, (5 * 2) + sol_valheim$food_data.getTotalFoodNutrition());
 
         Player player = (Player) (LivingEntity) this;
         player.getFoodData().setSaturation(0);
